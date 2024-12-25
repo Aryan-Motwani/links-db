@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Redirector</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 18px;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        input[type="text"] {
+            padding: 8px;
+            font-size: 16px;
+            width: 300px;
+        }
+
+        button {
+            padding: 8px 16px;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>URL Redirector</h1>
+    <p id="current-link">Loading...</p>
+
+    <form id="link-form">
+        <input type="text" id="link-input" placeholder="Enter a link from the list...">
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        let links = [
+"https://www.instagram.com/reel/DBEPmQ6izi_/",
+"https://www.instagram.com/reel/DBd1qRZsF_P/",
+"https://www.instagram.com/reel/DBQO7EANEO5/",
+"https://www.instagram.com/reel/DAfjKv8o3LM/",
+"https://www.instagram.com/reel/C8elVK2SxFi/",
+"https://www.instagram.com/reel/DBbXImKBSUS/",
+"https://www.instagram.com/reel/DBRE56eC9Pb/",
+"https://www.instagram.com/reel/DAkVa2cNEzr/",
+"https://www.instagram.com/p/DAYZknzuyli/",
+"https://www.instagram.com/reel/DAV4tRLt5on/",
+"https://www.instagram.com/reel/DATMvbBvaSM/",
+"https://www.instagram.com/reel/DALoicjqPzd/",
+"https://www.instagram.com/reel/C92MpDaSHqL/",
+"https://www.instagram.com/reel/DAA3MgypuSw/",
+"https://www.instagram.com/reel/C_8vbKfMGeB/",
+"https://www.instagram.com/reel/C_bMGuasm3w/",
+"https://www.instagram.com/reel/C_wPyxzuQ6P/",
+"https://www.instagram.com/reel/C9_jbkbyHmM/",
+"https://www.instagram.com/reel/C_do7MIuzpe/",
+"https://www.instagram.com/reel/C8r_ElYOFZG/",
+"https://www.instagram.com/reel/C_k3oZFIdEs/",
+"https://www.instagram.com/reel/C_afrQIi3Fe/",
+"https://www.instagram.com/p/C_ALkzWpwZj/",
+"https://www.instagram.com/reel/C_darisyrTT/",
+"https://www.instagram.com/reel/C_fwe3BN9wr/",
+"https://www.instagram.com/reel/C_dynb4oquP/",
+"https://www.instagram.com/reel/C_dKWRMSEIy/",
+"https://www.instagram.com/reel/C_NjaIPPnHn/",
+"https://www.instagram.com/reel/C_JT96RJpEf/",
+"https://www.instagram.com/reel/C_QLKOsAB8j/",
+"https://www.instagram.com/reel/C_VY4L9PG8Y/",
+"https://www.instagram.com/reel/C9NR1dLywFm/",
+"https://www.instagram.com/p/C_Om8TLSkcc/",
+"https://www.instagram.com/reel/C-5ZkcECJHi/",
+"https://www.instagram.com/reel/C7PdTGrS8C_/",
+"https://www.instagram.com/reel/C9OpvZ7vzp-/",
+"https://www.instagram.com/reel/C4aXW10sDt3/",
+"https://www.instagram.com/reel/C6ZFr6htqYf/",
+"https://www.instagram.com/reel/C-Sj86sy4uL/",
+"https://www.instagram.com/reel/C71iI2cMsfm/",
+"https://www.instagram.com/reel/C7wcYURuKWP/",
+"https://www.instagram.com/reel/C-FsiJ8Oc3s/",
+"https://www.instagram.com/reel/C-rMdO0plIE/",
+"https://www.instagram.com/p/CH-A4-lHtPG/",
+"https://www.instagram.com/p/C43GW0ZoRxu/",
+"https://www.instagram.com/p/C6fHzVrrMaQ/",
+"https://www.instagram.com/reel/C-ijIe-pMo4/",
+"https://www.instagram.com/reel/C7_Y2L2O56v/",
+"https://www.instagram.com/reel/C-NYOdsJO8o/",
+"https://www.instagram.com/reel/C-F7GMVu1VX/",
+"https://www.instagram.com/reel/C-LjH_8SJ2d/",
+"https://www.instagram.com/reel/C-NJAjROs6w/",
+"https://www.instagram.com/reel/C7zfMndPtMZ/",
+"https://www.instagram.com/reel/C9EoTT4y9tm/",
+"https://www.instagram.com/reel/C87iJ2nu2ut/",
+"https://www.instagram.com/reel/C-FGHibPH3P/",
+"https://www.instagram.com/reel/C73ARDXSfio/",
+"https://www.instagram.com/reel/C98Q78uuTqD/",
+"https://www.instagram.com/reel/C-Atx_agkyg/",
+"https://www.instagram.com/reel/C63_80WNVy4/",
+"https://www.instagram.com/reel/C9rTot3p9Ho/",
+"https://www.instagram.com/reel/C6OTt1yIiiK/",
+"https://www.instagram.com/reel/C9zjXOwvRK-/",
+"https://www.instagram.com/reel/C9OQAAjRql1/",
+"https://www.instagram.com/reel/C9u7WILScKc/",
+"https://www.instagram.com/reel/C9k5THrS0NV/",
+"https://www.instagram.com/reel/C7jtO_OvZLk/",
+"https://www.instagram.com/reel/C9kOCdLtzPL/",
+"https://www.instagram.com/reel/C6_ixOJy9qY/",
+"https://www.instagram.com/reel/C7GwRcHLlAz/",
+"https://www.instagram.com/reel/C8mXJoIqdRy/",
+"https://www.instagram.com/reel/C8H902PiuBv/",
+"https://www.instagram.com/reel/C6fkp_mIYH2/",
+"https://www.instagram.com/reel/C82BLIpNTyy/",
+"https://www.instagram.com/reel/C9JcO7iyRHk/",
+"https://www.instagram.com/reel/C82H7CZgQdv/",
+"https://www.instagram.com/reel/C9XfY8aytZd/",
+"https://www.instagram.com/reel/C8jyE-Vyy8Z/",
+"https://www.instagram.com/reel/C9SckwZypJ0/",
+"https://www.instagram.com/reel/C1Fa5wUs7Az/",
+"https://www.instagram.com/reel/C9FkUynSjCv/",
+"https://www.instagram.com/reel/C9J2ja-v-VO/",
+"https://www.instagram.com/reel/C7BkiRIBX13/",
+"https://www.instagram.com/reel/C7vlPI0PAbZ/",
+"https://www.instagram.com/reel/C8ozGPbhgdY/",
+"https://www.instagram.com/reel/C2ZrkGGS0D1/",
+"https://www.instagram.com/reel/C50y9XqIud-/",
+"https://www.instagram.com/reel/C887jvVykNE/",
+"https://www.instagram.com/reel/C81m4XVvbyI/",
+"https://www.instagram.com/reel/C9AC3F6yJn-/",
+"https://www.instagram.com/reel/C6_cZ52SGb_/",
+"https://www.instagram.com/reel/C8zS3mHPGX4/",
+"https://www.instagram.com/reel/C87R2pyC176/",
+"https://www.instagram.com/reel/C88N6IBNHTx/",
+"https://www.instagram.com/reel/C87FwarCla1/",
+"https://www.instagram.com/reel/C8s1PTxxG-B/",
+"https://www.instagram.com/reel/C8uXfx1S_lt/",
+"https://www.instagram.com/reel/C8omM9Jpkwz/",
+"https://www.instagram.com/reel/C8w2p4wvPGp/",
+"https://www.instagram.com/reel/C8ynkWjonKj/",
+"https://www.instagram.com/reel/C8uEUs8veZO/",
+"https://www.instagram.com/reel/C8rO6hMgjMG/",
+"https://www.instagram.com/reel/C8fOnImyjKi/",
+"https://www.instagram.com/p/C8cRibVNjxB/",
+"https://www.instagram.com/reel/C8mzMWLNw4o/",
+"https://www.instagram.com/reel/C8Z27Q2y0iX/",
+"https://www.instagram.com/reel/C8OVB7xRf56/",
+"https://www.instagram.com/reel/C8kGlrPSjZH/",
+"https://www.instagram.com/reel/C8Ult0iP1c-/",
+"https://www.instagram.com/reel/C8FeuJeRiCu/",
+"https://www.instagram.com/reel/C8U2Fy4yvPq/",
+"https://www.instagram.com/reel/C8KW0v9NEg7/",
+"https://www.instagram.com/reel/C7uBpllO5HM/",
+"https://www.instagram.com/reel/C8WNW2xsGXI/",
+"https://www.instagram.com/reel/C7tAryeo1v3/",
+"https://www.instagram.com/reel/C8RUW9RSahT/",
+"https://www.instagram.com/reel/C7sS3Uzta-U/",
+"https://www.instagram.com/reel/C8Df0Q5ChH1/",
+"https://www.instagram.com/reel/C7vf3MWtY23/",
+"https://www.instagram.com/p/Bvdvm3GhHXx/",
+"https://www.instagram.com/reel/C45kzFJtgf8/",
+"https://www.instagram.com/reel/C5-m3GGxZ8Y/",
+"https://www.instagram.com/reel/C3nDDJoPzc-/",
+"https://www.instagram.com/reel/C3oZ_n9vqso/",
+"https://www.instagram.com/reel/C3QKThBC_tn/",
+"https://www.instagram.com/reel/C5WDuS6SXhb/",
+"https://www.instagram.com/reel/C8E1KRCP1Bu/",
+"https://www.instagram.com/reel/C7B17S9SoM3/",
+"https://www.instagram.com/reel/C7ltRXhyK_S/",
+"https://www.instagram.com/p/C2uhrwFi1MD/",
+"https://www.instagram.com/reel/C5bGSBpyGm1/",
+"https://www.instagram.com/reel/C79jZ5ROuad/",
+"https://www.instagram.com/reel/C04Mg17xEk6/",
+"https://www.instagram.com/reel/C7jQF0ivmBs/",
+"https://www.instagram.com/reel/C74GoOaNINc/",
+"https://www.instagram.com/reel/C75iHgYtWRx/",
+"https://www.instagram.com/reel/C6y30GguZaz/",
+"https://www.instagram.com/reel/C71QOg-gAKF/",
+"https://www.instagram.com/reel/C6ooywLSHbA/",
+"https://www.instagram.com/reel/C7bnkXoPzvy/",
+"https://www.instagram.com/reel/C7tA1MTCo3z/",
+"https://www.instagram.com/reel/C66Nfmap0RU/",
+"https://www.instagram.com/reel/C7bv98aPppX/",
+"https://www.instagram.com/reel/C7rPQ0qyBbz/",
+"https://www.instagram.com/reel/C7u3YvBvyNJ/",
+"https://www.instagram.com/reel/C7rtHsqPS_F/",
+"https://www.instagram.com/reel/C4gKyYRPfrn/",
+"https://www.instagram.com/reel/C56AjxYyrtw/",
+"https://www.instagram.com/reel/C66GVEryrUZ/",
+"https://www.instagram.com/reel/C5Rx-jRpWHc/",
+"https://www.instagram.com/p/C61E3c2NAqy/",
+"https://www.instagram.com/reel/C6uhG44rpLV/",
+"https://www.instagram.com/reel/C7PMMPrS9Ox/",
+"https://www.instagram.com/reel/C7EY6ityrGC/",
+"https://www.instagram.com/reel/C7MYgZsg8Qx/",
+"https://www.instagram.com/reel/C6thOVvIyym/",
+"https://www.instagram.com/reel/C4IeSKwC1pq/",
+"https://www.instagram.com/reel/C7VSJ7vCyLK/",
+"https://www.instagram.com/reel/C4dGyznP1m7/",
+"https://www.instagram.com/reel/C7HJ4tYyx0G/",
+"https://www.instagram.com/reel/C6TokEbyeQH/",
+"https://www.instagram.com/reel/C58wBKUtFhG/",
+"https://www.instagram.com/reel/C6_PUU9ylT3/",
+"https://www.instagram.com/reel/C42Wr6go639/",
+"https://www.instagram.com/reel/C6yvn3-ybaM/",
+"https://www.instagram.com/reel/C5ML-6ntG3w/",
+"https://www.instagram.com/reel/C7O5cPzy98V/",
+"https://www.instagram.com/reel/C6qkxe_x7zq/",
+"https://www.instagram.com/reel/C5TXMMBStd9/",
+"https://www.instagram.com/reel/C6gn-a-PHPW/",
+"https://www.instagram.com/reel/C6JqW9UyHa4/",
+"https://www.instagram.com/reel/C6auaneCk05/",
+"https://www.instagram.com/p/C6RJW6nPzQ3/",
+"https://www.instagram.com/reel/C5tBkn3S2tV/",
+"https://www.instagram.com/reel/C6EIB5zv9FS/",
+"https://www.instagram.com/reel/C3r6JXwNejM/",
+"https://www.instagram.com/reel/C3xY93fyJb6/",
+"https://www.instagram.com/reel/C6T62yRLmrS/",
+"https://www.instagram.com/reel/C6QhiULstgg/",
+"https://www.instagram.com/reel/C5f8QIXtUfB/",
+"https://www.instagram.com/reel/C6NE9Aus74D/",
+"https://www.instagram.com/reel/C5s7Pi4NHm-/",
+"https://www.instagram.com/reel/C5V2-tmy08z/",
+"https://www.instagram.com/reel/C4dCv-gBAiA/",
+"https://www.instagram.com/reel/C4LQl1cNk1E/",
+"https://www.instagram.com/reel/C3Y1UqRgyzH/",
+"https://www.instagram.com/reel/C6Cpbtdoch3/",
+"https://www.instagram.com/reel/C5-794LO362/",
+"https://www.instagram.com/reel/C5ydaoyt2Aa/",
+"https://www.instagram.com/reel/C32dTTYIn9m/",
+"https://www.instagram.com/reel/C3iIdVZIoBP/",
+"https://www.instagram.com/reel/C3kdQjOhhy2/",
+"https://www.instagram.com/reel/C5oJX3TvZWg/",
+"https://www.instagram.com/reel/C3fPHN7NIer/",
+"https://www.instagram.com/reel/C5UPVR8A3Xw/",
+"https://www.instagram.com/reel/C5RUz4eREw0/",
+"https://www.instagram.com/reel/C5OIua0v6RN/",
+"https://www.instagram.com/reel/C4SPi-np4Ch/",
+"https://www.instagram.com/reel/C3VhXaEvF0c/",
+"https://www.instagram.com/p/C5N4c02tQu7/",
+"https://www.instagram.com/reel/C4qPEWXM4w3/",
+"https://www.instagram.com/p/C447JijI5rT/",
+"https://www.instagram.com/reel/C1zNdClsXUn/",
+"https://www.instagram.com/p/C3thYP9I5rT/",
+"https://www.instagram.com/p/C30n8r5SMuQ/",
+"https://www.instagram.com/reel/C3lnP4hvuXB/",
+"https://www.instagram.com/reel/C4IFk74t7SD/",
+"https://www.instagram.com/reel/C1flsA5Juen/",
+"https://www.instagram.com/reel/C3nYh98vUok/",
+"https://www.instagram.com/reel/C3sWWtXyf0Q/",
+"https://www.instagram.com/reel/C2odxKtomvI/",
+"https://www.instagram.com/reel/C3iV0C9Rivi/",
+"https://www.instagram.com/reel/C3uDJfwy-o9/",
+"https://www.instagram.com/p/C3_tYSgoO6W/",
+"https://www.instagram.com/p/C1ZHCFvtnL8/",
+"https://www.instagram.com/reel/C3eToOFSnrd/",
+"https://www.instagram.com/p/C2kDK6KsVeR/",
+"https://www.instagram.com/reel/C3IZPIOM7tk/",
+"https://www.instagram.com/p/C3xYda0t4qa/",
+"https://www.instagram.com/reel/C34j05jy6y-/",
+"https://www.instagram.com/reel/C3r-6hJoceZ/",
+"https://www.instagram.com/reel/C3k5S-2vtcv/",
+"https://www.instagram.com/reel/C3ZVTFpv5vc/",
+"https://www.instagram.com/reel/C2uEPsYydEA/",
+"https://www.instagram.com/reel/C16AA9LJRqu/",
+"https://www.instagram.com/reel/C3Ti-1yoV3-/",
+"https://www.instagram.com/reel/C3XZuhfrg5m/",
+"https://www.instagram.com/reel/C1nXLAurNDv/",
+"https://www.instagram.com/p/C3dAS9wvpxs/",
+"https://www.instagram.com/reel/C3SuyIEJtEr/",
+"https://www.instagram.com/p/C3D4XGENx5h/",
+"https://www.instagram.com/reel/C3K9OmqoT_v/",
+"https://www.instagram.com/reel/C1KCz37BJtx/",
+"https://www.instagram.com/p/C1CMjGiNCzq/",
+"https://www.instagram.com/reel/C0ovowrSoH8/",
+"https://www.instagram.com/reel/C0l4OezrQlI/",
+"https://www.instagram.com/reel/C0frzbDSVRd/",
+"https://www.instagram.com/reel/C0N3JaPuxV2/",
+"https://www.instagram.com/reel/CzdDpaCyeJc/",
+"https://www.instagram.com/reel/Cy4-7DryMpy/",
+"https://www.instagram.com/reel/CzMQlWgLzNZ/",
+"https://www.instagram.com/reel/CzGoSxdNgHl/",
+"https://www.instagram.com/reel/CzSJzGBMLhO/",
+"https://www.instagram.com/p/Cv6gyP0gFtX/",
+"https://www.instagram.com/reel/CykJ06jRPLS/",
+"https://www.instagram.com/reel/Cxzm1ynrT3D/",
+"https://www.instagram.com/reel/Cxq1bQ1vJMR/",
+"https://www.instagram.com/reel/CvXn5PtpqW7/",
+"https://www.instagram.com/reel/CyE6pZIqzDA/",
+"https://www.instagram.com/reel/CvmtmZ8uf7i/",
+"https://www.instagram.com/reel/Cwm8pp7Ikcf/",
+"https://www.instagram.com/reel/Cxa0Aoctg-K/",
+"https://www.instagram.com/reel/CxIIGEtNN71/",
+"https://www.instagram.com/reel/CupV99qANMU/",
+"https://www.instagram.com/reel/CvVkYmztlH1/",
+"https://www.instagram.com/reel/CvcNkqlMynT/",
+"https://www.instagram.com/p/Cvbvy-JsldO/",
+"https://www.instagram.com/p/Cu8ARXgOZYG/",
+"https://www.instagram.com/reel/CresNectgmB/",
+"https://www.instagram.com/reel/Cu3l-Jloznd/",
+"https://www.instagram.com/reel/CuhDKlOIova/",
+"https://www.instagram.com/reel/Ct9PYrpIJkW/",
+"https://www.instagram.com/reel/CrjJLjFuqE7/",
+"https://www.instagram.com/reel/Cq79wD3Mrwp/",
+"https://www.instagram.com/reel/CthHwCVJydE/",
+"https://www.instagram.com/reel/CtcY105N4BB/",
+"https://www.instagram.com/reel/Crs1XP5JjME/",
+"https://www.instagram.com/reel/Cs05944N4FF/",
+"https://www.instagram.com/reel/Cr25WH2JUF-/",
+"https://www.instagram.com/reel/Cra7SCmAU5m/",
+"https://www.instagram.com/reel/CtKjDEZAek9/",
+"https://www.instagram.com/reel/CtJ9RAqI12Q/",
+"https://www.instagram.com/reel/Cs8oBUyvwXR/",
+"https://www.instagram.com/reel/CtKlGnRA9zR/",
+"https://www.instagram.com/reel/Cs8qdsAIMzl/",
+"https://www.instagram.com/reel/CsEL6clsE2Y/",
+"https://www.instagram.com/reel/Crn3SXJpscy/",
+"https://www.instagram.com/reel/CrAwN9Ogwkv/",
+"https://www.instagram.com/reel/Cs3nrELN2bB/",
+"https://www.instagram.com/reel/CsGge1HPaYL/",
+"https://www.instagram.com/reel/CsqySEor27d/",
+"https://www.instagram.com/reel/CstfJLBgdpJ/",
+"https://www.instagram.com/reel/CqiJCswLInA/",
+"https://www.instagram.com/reel/Cs4ejl1IGwz/",
+"https://www.instagram.com/reel/Cr9PsHHAjbn/",
+"https://www.instagram.com/reel/Crfugtfp7tr/",
+"https://www.instagram.com/reel/Cr607sUpuHq/",
+"https://www.instagram.com/reel/Csi6g9vPAe0/",
+"https://www.instagram.com/reel/CslR7ovJjtm/",
+"https://www.instagram.com/reel/CsrgV2BLphB/",
+"https://www.instagram.com/reel/Cs4b7eYKGza/",
+"https://www.instagram.com/reel/Cs1VfRGOIRC/",
+"https://www.instagram.com/reel/Cspu0tkOu1d/",
+"https://www.instagram.com/reel/Csasso-vFXu/",
+"https://www.instagram.com/reel/Csl0uE5IJGw/",
+"https://www.instagram.com/reel/CstKGmHNc56/",
+"https://www.instagram.com/reel/CrnsUTPuotF/",
+"https://www.instagram.com/reel/CsgOq3vMfYS/",
+"https://www.instagram.com/reel/Cq_rMysvX4f/",
+"https://www.instagram.com/reel/CsZWa1OKCiY/",
+"https://www.instagram.com/reel/CsUq_6DANQD/",
+"https://www.instagram.com/reel/CsdOnfQLFk-/",
+"https://www.instagram.com/reel/Csl11GUvxxT/",
+"https://www.instagram.com/reel/CrOQaLXKnsK/",
+"https://www.instagram.com/reel/CsGruzUPiXv/",
+"https://www.instagram.com/reel/CsRLnLGIIyq/",
+"https://www.instagram.com/reel/CsbOZniNDQ8/",
+"https://www.instagram.com/p/CsJBPhEooWf/",
+"https://www.instagram.com/reel/CriLBrTt379/",
+"https://www.instagram.com/reel/Cr_HIaEMd1a/",
+"https://www.instagram.com/reel/CsJH0pfMBKO/",
+"https://www.instagram.com/reel/CsLHPaGgmHr/",
+"https://www.instagram.com/reel/CsKMZosK0wE/",
+"https://www.instagram.com/reel/CsJY83igmR8/",
+"https://www.instagram.com/p/CrtGz9urIhy/",
+"https://www.instagram.com/reel/Cr8iDhfNbe-/",
+"https://www.instagram.com/reel/CrwSkiIuEsl/",
+"https://www.instagram.com/reel/CqdVJUfuzBR/",
+"https://www.instagram.com/reel/CrpevRlM7sr/",
+"https://www.instagram.com/reel/Crve-QgNGIB/",
+"https://www.instagram.com/reel/CphdAv4Pmkl/",
+"https://www.instagram.com/reel/CrijsegoTOT/",
+"https://www.instagram.com/reel/CrLZcwKsqhJ/",
+"https://www.instagram.com/p/CruVQnUOU3V/",
+"https://www.instagram.com/reel/Cp0HdJuAgTl/",
+"https://www.instagram.com/reel/CqQlGD8g1fk/",
+"https://www.instagram.com/reel/Cpx67PTjZCn/",
+"https://www.instagram.com/reel/Cq27eHfMpZd/",
+"https://www.instagram.com/reel/CrlYF1eNG49/",
+"https://www.instagram.com/reel/CrdI4RiNXRW/",
+"https://www.instagram.com/reel/CrFe4MRIP6w/",
+"https://www.instagram.com/reel/Cri8ySpvSl_/",
+"https://www.instagram.com/reel/CrhKkjqhA4P/",
+"https://www.instagram.com/reel/CrS2UMgA6N4/",
+"https://www.instagram.com/reel/CrTQQX2sfaf/",
+"https://www.instagram.com/reel/CrfE30oI_Cl/",
+"https://www.instagram.com/reel/CqLwDIkNDys/",
+"https://www.instagram.com/reel/CrV646bx3Og/",
+"https://www.instagram.com/reel/CrdZEbNAHOG/",
+"https://www.instagram.com/reel/CrgAiA4plXT/",
+"https://www.instagram.com/reel/CrX0UCgOcO4/",
+"https://www.instagram.com/reel/CrgIKZHAkwD/",
+"https://www.instagram.com/reel/Cqnv728N5Qo/",
+"https://www.instagram.com/reel/Cp-IvSFKOd3/",
+"https://www.instagram.com/reel/Cq4GR_OgotV/",
+"https://www.instagram.com/reel/CrWd47_t9E5/",
+"https://www.instagram.com/reel/CrLbETHAz6r/",
+"https://www.instagram.com/reel/Cq0yQWpte26/",
+"https://www.instagram.com/reel/CrDl1-uNRnQ/",
+"https://www.instagram.com/reel/Cp_7AVRD3ox/",
+"https://www.instagram.com/reel/CrJTjqfrCVH/",
+"https://www.instagram.com/reel/CrLYTT6pU9b/",
+"https://www.instagram.com/reel/Cn9vGeSNLTI/",
+"https://www.instagram.com/reel/CpB1ewlDeGW/",
+"https://www.instagram.com/reel/CoPxUPRNlSe/",
+"https://www.instagram.com/reel/CrQvwepIxim/",
+"https://www.instagram.com/reel/CrLlDZbKxaB/",
+"https://www.instagram.com/reel/CrSqlHRAuOT/",
+"https://www.instagram.com/reel/Co7D1sVLLXb/",
+"https://www.instagram.com/reel/CrGnY_Fg6uR/",
+"https://www.instagram.com/reel/CrD2d9brXHE/",
+"https://www.instagram.com/reel/CoVh70drP99/",
+"https://www.instagram.com/reel/CqpI6F6gKdf/",
+"https://www.instagram.com/reel/Cq5j4YBgV0z/",
+"https://www.instagram.com/reel/Cpx1MFAhnwI/",
+"https://www.instagram.com/reel/Cn7KiASgBc_/",
+"https://www.instagram.com/reel/CpfW34_plk-/",
+"https://www.instagram.com/reel/CpnQiB5ge_g/",
+"https://www.instagram.com/reel/CqZvz8WoCv3/",
+"https://www.instagram.com/reel/CqHGnRcv0AO/",
+"https://www.instagram.com/reel/CoZzM1Wp0Gr/",
+"https://www.instagram.com/reel/CqDiWukDJGB/",
+"https://www.instagram.com/reel/CqzCJRipB06/",
+"https://www.instagram.com/reel/Cqwz5nYAAyT/",
+"https://www.instagram.com/reel/Cp698N-D9pp/",
+"https://www.instagram.com/reel/CpNv6-1Dg-b/",
+"https://www.instagram.com/reel/Cqip2j2pKJe/",
+"https://www.instagram.com/reel/CqKV1xQOXCX/",
+"https://www.instagram.com/reel/CqgHraev4os/",
+"https://www.instagram.com/reel/CqnwaKyDMxw/",
+"https://www.instagram.com/reel/Com8LdNoxp5/",
+"https://www.instagram.com/reel/CpG0ps1AgQx/",
+"https://www.instagram.com/p/CqX4a72AIZO/",
+"https://www.instagram.com/reel/CqkVBf2DTLI/",
+"https://www.instagram.com/reel/Cqfrm-RMp7q/",
+"https://www.instagram.com/reel/CqXzcZ-DHNM/",
+"https://www.instagram.com/reel/CqRvvFxuQZ-/",
+"https://www.instagram.com/reel/CqS4AFHjGQM/",
+"https://www.instagram.com/reel/CqIlWyRLq76/",
+"https://www.instagram.com/reel/CqTC26tokEy/",
+"https://www.instagram.com/reel/CqC5txTgH5W/",
+"https://www.instagram.com/reel/CoUyOvDAaYF/",
+"https://www.instagram.com/reel/CoaEiuuDumf/",
+"https://www.instagram.com/reel/CpnNiO1DEw5/",
+"https://www.instagram.com/reel/CqIqlE6jAao/",
+"https://www.instagram.com/reel/Cpux8hLACB1/",
+"https://www.instagram.com/reel/CojlEI1DOHs/",
+"https://www.instagram.com/reel/Cp9hU8Aj7gZ/",
+"https://www.instagram.com/reel/Cpki9nvJzTg/",
+"https://www.instagram.com/reel/CqDXY62Da3m/",
+"https://www.instagram.com/reel/CpNIPmpDfG8/",
+"https://www.instagram.com/reel/Co4dkjzDyWm/",
+"https://www.instagram.com/reel/Co9tHipAhEH/",
+"https://www.instagram.com/reel/Co6uXHOD1lM/",
+"https://www.instagram.com/reel/CnUtDHNggJ3/",
+"https://www.instagram.com/reel/CoTW_7iDGYU/",
+"https://www.instagram.com/reel/CnemLfiB6RF/",
+"https://www.instagram.com/reel/Cmt_6JsBvML/",
+"https://www.instagram.com/reel/CmN9kEADV5C/",
+"https://www.instagram.com/reel/CpH8q-xD4WX/",
+"https://www.instagram.com/reel/CmtlgDqoEFl/",
+"https://www.instagram.com/reel/CnZRF0CqlbN/",
+"https://www.instagram.com/reel/CprbTcOjc5o/",
+"https://www.instagram.com/reel/CpaI973oc30/",
+"https://www.instagram.com/reel/Cozzo7GAkg7/",
+"https://www.instagram.com/reel/Cmast_Yob5M/",
+"https://www.instagram.com/reel/CpSsvflJFCP/",
+"https://www.instagram.com/reel/CpJkOjiKJO6/",
+"https://www.instagram.com/reel/CnujS59sNgf/",
+"https://www.instagram.com/reel/CpaGASmJ9Sr/",
+"https://www.instagram.com/reel/CmqSBKePfi0/",
+"https://www.instagram.com/reel/CpMsWSEOESL/",
+"https://www.instagram.com/reel/CpeHn0CPge5/",
+"https://www.instagram.com/reel/CpIEyPPOJ5B/",
+"https://www.instagram.com/reel/Cofqr8RAIyS/",
+"https://www.instagram.com/reel/Cnj4m5NP9wa/",
+"https://www.instagram.com/p/CpScu7ju6QJ/",
+"https://www.instagram.com/p/Cpgo23NuQ7O/",
+"https://www.instagram.com/reel/Co5BgziAEYo/",
+"https://www.instagram.com/reel/CnwIGaItoGp/",
+"https://www.instagram.com/reel/CoPmZ5WgQt1/",
+"https://www.instagram.com/reel/Cm5jbizr07m/",
+"https://www.instagram.com/reel/Coh_jETuEbB/",
+"https://www.instagram.com/reel/CnLzhLOOpBa/",
+"https://www.instagram.com/reel/CpBKsoxuKO5/",
+"https://www.instagram.com/reel/CoufL4hrgBr/",
+"https://www.instagram.com/reel/CpaO6oVNUhH/",
+"https://www.instagram.com/reel/CpXi_owAx1R/",
+"https://www.instagram.com/reel/CpELcyNAEqZ/",
+"https://www.instagram.com/reel/CpNcNETMdrt/",
+"https://www.instagram.com/reel/CpK8RMPsQZM/",
+"https://www.instagram.com/reel/CpSSYOujcLZ/",
+"https://www.instagram.com/reel/Co6Ef-MgEbS/",
+"https://www.instagram.com/reel/CoUOCD3hO_t/",
+"https://www.instagram.com/reel/CmXdy3Ig2Ck/",
+"https://www.instagram.com/reel/CoDd_U2Oh2n/",
+"https://www.instagram.com/reel/CobWNLogeCN/",
+"https://www.instagram.com/reel/Cn41904KaV1/",
+"https://www.instagram.com/reel/Cn9VB8iD9dV/",
+"https://www.instagram.com/reel/Cn2tXiUqilt/",
+"https://www.instagram.com/reel/CoUr6YiBRvY/",
+"https://www.instagram.com/p/CoWQ6DZy-IM/",
+"https://www.instagram.com/reel/CnPCSmtoYui/",
+"https://www.instagram.com/reel/Cn683WyNcZs/",
+"https://www.instagram.com/reel/Cn9lxC0qNLP/",
+"https://www.instagram.com/reel/CniV9DgIZ-p/",
+"https://www.instagram.com/reel/CmzKJNfIqtu/",
+"https://www.instagram.com/reel/Cnh0I8pBeWO/",
+"https://www.instagram.com/reel/Cm90hnujyka/",
+"https://www.instagram.com/reel/CnfqnGFp6Zy/",
+"https://www.instagram.com/reel/CloPsfDLMoQ/",
+"https://www.instagram.com/reel/CnxQXv-q_EJ/",
+"https://www.instagram.com/reel/CnmmERtKsJv/",
+"https://www.instagram.com/reel/CnunAbaoCpo/",
+"https://www.instagram.com/reel/CmdH5Yzpyic/",
+"https://www.instagram.com/reel/Ck6MgjDDGzW/",
+"https://www.instagram.com/reel/ClEu9QSpvgb/",
+"https://www.instagram.com/reel/CmwMdznoUiL/",
+"https://www.instagram.com/reel/CnE6fOcrVtp/",
+"https://www.instagram.com/reel/CncTjPZKg6y/",
+"https://www.instagram.com/reel/CmzBwIeKGVj/",
+"https://www.instagram.com/reel/CnZ-SwohZ-Y/",
+"https://www.instagram.com/reel/CnTFiicJ1bS/",
+"https://www.instagram.com/reel/CnNIup-OwON/",
+"https://www.instagram.com/reel/CmwXGraA-Ac/",
+"https://www.instagram.com/reel/Cni93zJBVkk/",
+"https://www.instagram.com/reel/Cmhz42bsyh-/",
+"https://www.instagram.com/reel/Ck2WnKcjNRU/",
+"https://www.instagram.com/reel/CneyXumInQZ/",
+"https://www.instagram.com/reel/CndxbgUhJgL/",
+"https://www.instagram.com/reel/CnHMjPDjdUl/",
+"https://www.instagram.com/reel/Cm8GAWdK0Ky/",
+"https://www.instagram.com/reel/CnjurONsmZJ/",
+"https://www.instagram.com/reel/Cnbomfwqp7y/",
+"https://www.instagram.com/reel/Cmy65JRBVyL/",
+"https://www.instagram.com/reel/CnR7RkVqR1s/",
+"https://www.instagram.com/reel/Cmy8l3Hh2_Y/",
+"https://www.instagram.com/reel/CnA-bALh_z9/",
+"https://www.instagram.com/reel/Cm1qy3PI3LQ/",
+"https://www.instagram.com/reel/Cmv0NttJmS_/",
+"https://www.instagram.com/p/CnYonJOq028/",
+"https://www.instagram.com/reel/CmRPZYWNtYL/",
+"https://www.instagram.com/reel/Cm7w1ubJEvt/",
+"https://www.instagram.com/reel/CnYRCF9qnkw/",
+"https://www.instagram.com/p/CnUwzK3uQxK/",
+"https://www.instagram.com/reel/Cm7Y3SGAQey/",
+"https://www.instagram.com/reel/CnQ2KTKBGRH/",
+"https://www.instagram.com/p/CnTXBAFgnxP/",
+"https://www.instagram.com/p/CndtmmWNFXA/",
+"https://www.instagram.com/reel/CnP-1vBKmuj/",
+"https://www.instagram.com/reel/CnIUpWXpHyK/",
+"https://www.instagram.com/reel/CnPNtYIpWcy/",
+"https://www.instagram.com/reel/CmrBITPsQ1F/",
+"https://www.instagram.com/reel/CnPvJNFtBeZ/",
+"https://www.instagram.com/reel/Cm2tOhZBZ9o/",
+"https://www.instagram.com/reel/ClO-w-uDEOm/",
+"https://www.instagram.com/reel/CnOigFyB4Xd/",
+"https://www.instagram.com/reel/Cle4_sOAVfP/",
+"https://www.instagram.com/reel/Cmg8wSMhUCu/",
+"https://www.instagram.com/p/Cm6CJ70ACFN/",
+"https://www.instagram.com/reel/CnCMP1HB4WI/",
+"https://www.instagram.com/reel/CmtbmpFKOs2/",
+"https://www.instagram.com/reel/CmY73BgDr9c/",
+"https://www.instagram.com/reel/CmuAUv3hkNe/",
+"https://www.instagram.com/reel/CmxtVr3Lv8R/",
+"https://www.instagram.com/reel/CmjT6RHDdVz/",
+"https://www.instagram.com/reel/Cmwc816sb6j/",
+"https://www.instagram.com/reel/Cmcfja8JQqQ/",
+"https://www.instagram.com/reel/CkgOC0nDuhQ/",
+"https://www.instagram.com/reel/CmoVhPojMaP/",
+"https://www.instagram.com/reel/Cl9d3n_Db5L/",
+"https://www.instagram.com/reel/Cknn2Q3AUyU/",
+"https://www.instagram.com/reel/Cmen-hQKpfV/",
+"https://www.instagram.com/reel/Cl1TGN_o2Zq/",
+"https://www.instagram.com/reel/Cm0mo7yKn0I/",
+"https://www.instagram.com/reel/CmixwmMp9AS/",
+"https://www.instagram.com/reel/Cmd9XYbpYSO/",
+"https://www.instagram.com/reel/CmpIXjuhqIx/",
+"https://www.instagram.com/reel/CmQENgejOIJ/",
+"https://www.instagram.com/reel/CkbHuLmgMrF/",
+"https://www.instagram.com/reel/CmErdVEjsHc/",
+"https://www.instagram.com/reel/Cmb8MdwJj5c/",
+"https://www.instagram.com/reel/CmZeU0BD3G1/",
+"https://www.instagram.com/reel/CmT91TBradt/",
+"https://www.instagram.com/reel/ClrKtXvpuQZ/",
+"https://www.instagram.com/reel/CmKA8BWJano/",
+"https://www.instagram.com/reel/ClziWPborp7/",
+"https://www.instagram.com/reel/Clt4Xy0MbSZ/",
+"https://www.instagram.com/reel/CmVsBWDt1V_/",
+"https://www.instagram.com/reel/CmDkScts4N4/",
+"https://www.instagram.com/reel/CmKQxj5g3cL/",
+"https://www.instagram.com/reel/Cltdb6LjLZ9/",
+"https://www.instagram.com/reel/CkZ9bHhpWVn/",
+"https://www.instagram.com/reel/CmMbPJWJvwv/",
+"https://www.instagram.com/reel/CmGDSPjjLYx/",
+"https://www.instagram.com/reel/Cl6XIR_rMgy/",
+"https://www.instagram.com/reel/CmJfsXcgsjY/",
+"https://www.instagram.com/reel/Cl-gYSIvjS2/",
+"https://www.instagram.com/reel/ClY5KSwDV3U/",
+"https://www.instagram.com/reel/CkUwCeLI75l/",
+"https://www.instagram.com/reel/ClEUdfnM0b-/",
+"https://www.instagram.com/reel/CkDqWiAp0Fq/",
+"https://www.instagram.com/reel/CkvenyigZKi/",
+"https://www.instagram.com/reel/ClgSil5pV8I/",
+"https://www.instagram.com/reel/Ck5EW9mACTA/",
+"https://www.instagram.com/reel/CkNWRTFDuQd/",
+"https://www.instagram.com/reel/CjK8XiapfO1/",
+"https://www.instagram.com/reel/Ciu2ryHJXDp/",
+"https://www.instagram.com/reel/CjOSdHgA-4J/",
+"https://www.instagram.com/reel/CkzZggKuND5/",
+"https://www.instagram.com/reel/ClcprmxpmBI/",
+"https://www.instagram.com/reel/ClxrfwmM7II/",
+"https://www.instagram.com/reel/Ckqb2kuv_0L/",
+"https://www.instagram.com/reel/ClXztB-q0yb/",
+"https://www.instagram.com/reel/ClPF5GlDeAd/",
+"https://www.instagram.com/reel/ClqyEuLMwia/",
+"https://www.instagram.com/reel/ClkWXXrD0td/",
+"https://www.instagram.com/reel/Cl55UFnpw4f/",
+"https://www.instagram.com/reel/ClTcMTQMS4G/",
+"https://www.instagram.com/reel/CkWaZD5Jl6d/",
+"https://www.instagram.com/reel/Ck5xezoPLHT/",
+"https://www.instagram.com/reel/ClgYjsajgF6/",
+"https://www.instagram.com/reel/Clvh86dpRm7/",
+"https://www.instagram.com/reel/CjGPQUtDMVi/",
+"https://www.instagram.com/reel/CjA4v2qJQRT/",
+"https://www.instagram.com/reel/Cldufjpq33Q/",
+"https://www.instagram.com/reel/CkbG6vlghRd/",
+"https://www.instagram.com/reel/CltkS0JpwwZ/",
+"https://www.instagram.com/reel/CknDoHCj2gw/",
+"https://www.instagram.com/reel/Cls9UFrj7Ni/",
+"https://www.instagram.com/reel/Ci0L5PbjSY0/",
+"https://www.instagram.com/reel/CktjmIHoXmL/",
+"https://www.instagram.com/reel/ClUQVGfvPbl/",
+"https://www.instagram.com/reel/Cj-ZRH6j0Rd/",
+"https://www.instagram.com/reel/CjdQBvjjFT7/",
+"https://www.instagram.com/reel/CkvEEqOpeNl/",
+"https://www.instagram.com/reel/Ci7gK_Vh7hj/",
+"https://www.instagram.com/reel/Ck3QCBVv9Td/",
+"https://www.instagram.com/reel/Ck8nIF3ILiJ/",
+"https://www.instagram.com/reel/ClT3RP2j3OQ/",
+"https://www.instagram.com/reel/Ci5xz4XIiNs/",
+"https://www.instagram.com/reel/ClBPVlZj_4O/",
+"https://www.instagram.com/reel/CktupbZjeef/",
+"https://www.instagram.com/reel/CkyAwxJDY0G/",
+"https://www.instagram.com/reel/ClAADRVpbXa/",
+"https://www.instagram.com/reel/Chup1ThIa0v/",
+"https://www.instagram.com/reel/Cirguecj7Ck/",
+"https://www.instagram.com/reel/CkycWVAPQZc/",
+"https://www.instagram.com/reel/ClDxuBLqQKq/",
+"https://www.instagram.com/reel/Ci-vomRtMe0/",
+"https://www.instagram.com/reel/CjwV6l3Js-k/",
+"https://www.instagram.com/reel/Ch1XxMmjqS6/",
+"https://www.instagram.com/reel/ChwOHNKDFmC/",
+"https://www.instagram.com/reel/CkqFAhzN_lY/",
+"https://www.instagram.com/reel/CjFzr1QJ_jo/",
+"https://www.instagram.com/reel/CkLPGu1h7lO/",
+"https://www.instagram.com/reel/Ci2shOegOJS/",
+"https://www.instagram.com/reel/Cki9nL2AFlx/",
+"https://www.instagram.com/reel/CkA_BLvgTjK/",
+"https://www.instagram.com/reel/Ckk6EgRj135/",
+"https://www.instagram.com/reel/CjGH2EZA1ZY/",
+"https://www.instagram.com/reel/CkOGDfuI1tb/",
+"https://www.instagram.com/reel/Cj5bGHFDPw7/",
+"https://www.instagram.com/reel/CkAq1fuviFA/",
+"https://www.instagram.com/reel/CiASofTjscL/",
+"https://www.instagram.com/reel/Ck8SW6dvSbL/",
+"https://www.instagram.com/reel/CkNGg1wAp-F/",
+"https://www.instagram.com/reel/CkddAhUDexq/",
+"https://www.instagram.com/reel/CkQehQTJzwm/",
+"https://www.instagram.com/reel/CkLguHtjynF/",
+"https://www.instagram.com/reel/CkiQNKyjsIt/",
+"https://www.instagram.com/reel/ChmoyPQIy-A/",
+"https://www.instagram.com/reel/CkJHYvFjvCA/",
+"https://www.instagram.com/reel/CkaxR9FMYgn/",
+"https://www.instagram.com/reel/CkUZHT4um7Z/",
+"https://www.instagram.com/reel/CkPObOVASWf/",
+"https://www.instagram.com/reel/CjXuZLtqIqx/",
+"https://www.instagram.com/reel/CkkYR-gDMOn/",
+"https://www.instagram.com/reel/Chv7le3ouXV/",
+"https://www.instagram.com/p/CjlF57Xj34l/",
+"https://www.instagram.com/reel/Cjks_4GI35l/",
+"https://www.instagram.com/reel/CjSgbwhDFWU/",
+"https://www.instagram.com/reel/Cj2-M2UhKn1/",
+"https://www.instagram.com/reel/CjhcbNMpxE9/",
+"https://www.instagram.com/reel/CkA0uVxjEzN/",
+"https://www.instagram.com/p/Cjef4z2gZkx/",
+"https://www.instagram.com/reel/CiqHCRUsQiz/",
+"https://www.instagram.com/reel/Ci6BAi0htIy/",
+"https://www.instagram.com/reel/Ci5pjX8qtNK/",
+"https://www.instagram.com/reel/CiufesjILo4/",
+"https://www.instagram.com/reel/Ci7H8K0DvW1/",
+"https://www.instagram.com/reel/CjewqHZJqLs/",
+"https://www.instagram.com/reel/Ciz1t5lLlRs/",
+"https://www.instagram.com/reel/CivlYBvDf6_/",
+"https://www.instagram.com/reel/ChsNbJ2p7w4/",
+"https://www.instagram.com/reel/CirpuzqjzLc/",
+"https://www.instagram.com/reel/Ci-j_8zDLte/",
+"https://www.instagram.com/reel/Cikqc0ugAZB/",
+"https://www.instagram.com/reel/CinlKtAvYzz/",
+"https://www.instagram.com/reel/CisJN4zLrCi/",
+"https://www.instagram.com/reel/Ci9wab3g0pq/",
+"https://www.instagram.com/reel/CixXGuvveHM/",
+"https://www.instagram.com/reel/Cih-_AdI5Ah/",
+"https://www.instagram.com/p/Ci7v0igvqAu/",
+"https://www.instagram.com/reel/CiRXNMOq42J/",
+"https://www.instagram.com/p/CiwPE2WPgPO/",
+"https://www.instagram.com/reel/ChuYgyFAaPZ/",
+"https://www.instagram.com/reel/Cia57v5L2gA/",
+"https://www.instagram.com/reel/CiILNEtguct/",
+"https://www.instagram.com/reel/CgrOzd0ptHC/",
+"https://www.instagram.com/reel/CiB3ywkMzsi/",
+"https://www.instagram.com/reel/Ch9DDqNDHhL/",
+"https://www.instagram.com/p/CiVHxL3OmIm/",
+"https://www.instagram.com/p/CiXotOLPqmN/",
+"https://www.instagram.com/p/Cetup_UIxw_/",
+"https://www.instagram.com/reel/Ceu4bl-pEsU/",
+"https://www.instagram.com/p/Ce35GyANlHx/",
+"https://www.instagram.com/p/Ce35Gx3tvHW/",
+"https://www.instagram.com/reel/CeBrpl9gBFO/",
+"https://www.instagram.com/reel/CeBK_OvjGCa/",
+"https://www.instagram.com/reel/CeWJ-aYgD5y/",
+"https://www.instagram.com/reel/CeBdieIA5Dq/",
+"https://www.instagram.com/p/Cept4cYukvz/",
+"https://www.instagram.com/reel/CerJKFZp-Ok/",
+"https://www.instagram.com/reel/Cd-wMvIJefa/",
+"https://www.instagram.com/reel/Cd24pQeMePx/",
+
+        ]; // Add more links as needed
+        let currentIndex = 0;
+
+        // Function to fetch the last added link from localStorage and set currentIndex
+        function loadLastLink() {
+    const storedLinks = JSON.parse(localStorage.getItem('linksWithDescriptions')) || [];
+    const savedLinks = storedLinks.map(item => item.link); // Extract only the link values from local storage
+
+    // Filter out links already present in local storage
+    links = links.filter(link => !savedLinks.includes(link));
+
+    // If there are any unsaved links, set the current index to the first unsaved link
+    if (links.length > 0) {
+        currentIndex = 0;
+    } else {
+        // If all links are saved, show a message
+        document.getElementById('current-link').textContent = "No new links available.";
+    }
+}
+
+
+        // Display the current link
+        function displayCurrentLink() {
+            document.getElementById('current-link').textContent = `Press 'K' to open: ${links[currentIndex]}`;
+        }
+
+        // Copy text to clipboard
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                console.log("Link copied to clipboard:", text);
+            }).catch(err => {
+                console.error("Could not copy text:", err);
+            });
+        }
+
+        // Save link and description to local storage
+        function saveLinkDescription(link, description) {
+            const storedLinks = JSON.parse(localStorage.getItem('linksWithDescriptions')) || [];
+            const linkIndex = storedLinks.findIndex(item => item.link === link);
+
+            if (linkIndex !== -1) {
+                // Update existing description
+                storedLinks[linkIndex].description = description;
+            } else {
+                // Add new entry
+                storedLinks.push({ link, description });
+            }
+
+            localStorage.setItem('linksWithDescriptions', JSON.stringify(storedLinks));
+            console.log("Saved to local storage:", { link, description });
+            // Move to next link
+            currentIndex = (currentIndex + 1) % links.length;
+
+// Update the link display and redirect
+displayCurrentLink();
+window.open(links[currentIndex], '_blank');
+            
+        }
+
+        // Get description for a link from local storage
+        function getLinkDescription(link) {
+            const storedLinks = JSON.parse(localStorage.getItem('linksWithDescriptions')) || [];
+            const linkData = storedLinks.find(item => item.link === link);
+            return linkData ? linkData.description : "";
+        }
+
+        // Listen for key presses
+        document.addEventListener('keydown', (event) => {
+            if (event.key.toLowerCase() === 'k' && links.length > 0) {
+                const currentLink = links[currentIndex];
+                copyToClipboard(currentLink);
+                window.open(currentLink, '_blank');
+            } else if (event.key.toLowerCase() === 'l') {
+                const currentLink = links[currentIndex];
+                const existingDescription = getLinkDescription(currentLink);
+                const description = prompt("Enter a description for the link:", existingDescription);
+
+                if (description !== null) {
+                    saveLinkDescription(currentLink, description);
+                    alert("Description saved!");
+                }
+            } else if (event.key.toLowerCase() === 'q') {
+                const currentLink = links[currentIndex];
+                const existingDescription = getLinkDescription(currentLink);  // Fetch the existing description if any
+                const descriptionToSave = existingDescription || "";  // If no description, save with empty string
+                saveLinkDescription(currentLink, descriptionToSave);
+
+                // Move to next link
+                currentIndex = (currentIndex + 1) % links.length;
+
+                // Update the link display and redirect
+                displayCurrentLink();
+                window.open(links[currentIndex], '_blank');
+            }
+        });
+
+        // Handle form submission
+        document.getElementById('link-form').addEventListener('submit', (event) => {
+            event.preventDefault();
+            const linkInput = document.getElementById('link-input').value;
+            const linkIndex = links.indexOf(linkInput);
+
+            if (linkIndex !== -1) {
+                currentIndex = linkIndex;
+                displayCurrentLink();
+            } else {
+                alert("Link not found in the list.");
+            }
+        });
+
+        // Initialize by loading the last added link from localStorage
+        loadLastLink();
+        displayCurrentLink();
+    </script>
+</body>
+</html>

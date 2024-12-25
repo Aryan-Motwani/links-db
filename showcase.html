@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saved Links and Descriptions</title>
+    <style>
+        /* Same styles as before */
+    </style>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js"></script>
+</head>
+<body>
+    <h1>Saved Links and Descriptions</h1>
+
+    <!-- Clear Display Button -->
+    <button id="clear-display-btn">Clear Display</button>
+
+    <!-- Data Source Selection -->
+    <div id="data-source-buttons">
+        <button id="local-storage-btn">Fetch from Local Storage</button>
+        <button id="firebase-btn">Fetch from Firebase</button>
+    </div>
+
+    <!-- Filter Buttons -->
+    <div id="filter-buttons">
+        <button id="filter-all">All</button>
+        <button id="filter-tagged">Tagged</button>
+        <button id="filter-not-tagged">Not Tagged</button>
+    </div>
+
+    <!-- Search Bar -->
+    <input type="text" id="search-box" placeholder="Search descriptions...">
+    
+    <!-- Export and Transfer Buttons -->
+    <button id="export-btn">Export to CSV</button>
+    <button id="transfer-btn">Transfer Local Storage Data to Firebase</button>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Sr. No.</th>
+                <th>Link</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="links-table-body">
+            <!-- Rows will be dynamically added here -->
+        </tbody>
+    </table>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+        import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD9aukt0u3bgytNDmKKVtJhEbE9-BRZhtc",
+            authDomain: "motors-eb701.firebaseapp.com",
+            databaseURL: "https://motors-eb701-default-rtdb.firebaseio.com",
+            projectId: "motors-eb701",
+            storageBucket: "motors-eb701.firebasestorage.app",
+            messagingSenderId: "50134567368",
+            appId: "1:50134567368:web:acb2273e3e694dc8fa18fd",
+            measurementId: "G-QX92B7N5M6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        let storedLinks = JSON.parse(localStorage.getItem('linksWithDescriptions')) || [];
+        let filteredLinks = [...storedLinks];
+        let currentDataSource = 'local';
+        let currentFilter = 'all';
+
+        // Populate the table
+        window.populateTable = function(data = storedLinks) {
+            const tableBody = document.getElementById('links-table-body');
+            tableBody.innerHTML = '';
+
+            data.forEach((item, index) => {
+                const row = document.createElement('tr');
+
+                const serialCell = document.createElement('td');
+                serialCell.textContent = index + 1;
+
+                const linkCell = document.createElement('td');
+                const linkAnchor = document.createElement('a');
+                linkAnchor.href = item.link;
+                linkAnchor.textContent = item.link;
+                linkAnchor.target = '_blank';
+                linkCell.appendChild(linkAnchor);
+
+                const descriptionCell = document.createElement('td');
+                descriptionCell.textContent = item.description;
+
+                const actionsCell = document.createElement('td');
+                const editButton = document.createElement('span');
+                editButton.textContent = 'Edit';
+                editButton.classList.add('edit-btn');
+                editButton.addEventListener('click', () => editDescription(index));
+                const deleteButton = document.createElement('span');
+                deleteButton.textContent = 'Delete';
+                deleteButton.classList.add('delete-btn');
+                deleteButton.addEventListener('click', () => deleteEntry(index));
+                actionsCell.appendChild(editButton);
+                actionsCell.appendChild(deleteButton);
+
+                row.appendChild(serialCell);
+                row.appendChild(linkCell);
+                row.appendChild(descriptionCell);
+                row.appendChild(actionsCell);
+
+                tableBody.appendChild(row);
+            });
+        };
+
+        // Fetch data from Local Storage
+        window.fetchFromLocalStorage = function() {
+            currentDataSource = 'local';
+            storedLinks = JSON.parse(localStorage.getItem('linksWithDescriptions')) || [];
+            filteredLinks = [...storedLinks];
+            filterEntries('all');
+        };
+
+        // Fetch data from Firebase
+        window.fetchFromFirebase = async function() {
+            currentDataSource = 'firebase';
+            const snapshot = await get(ref(db, '/linksWithDescriptions'));
+            storedLinks = snapshot.val() ? Object.values(snapshot.val()) : [];
+            filteredLinks = [...storedLinks];
+            filterEntries('all');
+        };
+
+        // Filter entries
+        window.filterEntries = function(filter) {
+            currentFilter = filter;
+            if (filter === 'all') {
+                filteredLinks = [...storedLinks];
+            } else if (filter === 'tagged') {
+                filteredLinks = storedLinks.filter(item => item.description.trim() !== '');
+            } else if (filter === 'not-tagged') {
+                filteredLinks = storedLinks.filter(item => item.description.trim() === '');
+            }
+            populateTable(filteredLinks);
+        };
+
+        // Search descriptions
+        window.searchDescription = function() {
+            const query = document.getElementById('search-box').value.toLowerCase();
+            const searchResults = filteredLinks.filter(item => item.description.toLowerCase().includes(query));
+            populateTable(searchResults);
+        };
+
+        // Add event listeners
+        document.getElementById('local-storage-btn').addEventListener('click', fetchFromLocalStorage);
+        document.getElementById('firebase-btn').addEventListener('click', fetchFromFirebase);
+        document.getElementById('clear-display-btn').addEventListener('click', () => populateTable([]));
+        document.getElementById('filter-all').addEventListener('click', () => filterEntries('all'));
+        document.getElementById('filter-tagged').addEventListener('click', () => filterEntries('tagged'));
+        document.getElementById('filter-not-tagged').addEventListener('click', () => filterEntries('not-tagged'));
+        document.getElementById('search-box').addEventListener('input', searchDescription);
+
+        // Initial population of the table
+        fetchFromLocalStorage();
+    </script>
+</body>
+</html>
