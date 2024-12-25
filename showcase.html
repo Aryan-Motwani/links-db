@@ -5,7 +5,118 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Saved Links and Descriptions</title>
     <style>
-        /* Same styles as before */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #444;
+        }
+
+        #data-source-buttons, #filter-buttons, #search-box, #export-btn, #transfer-btn {
+            margin-bottom: 20px;
+        }
+
+        button {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        table th, table td {
+            padding: 15px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #f4f4f4;
+            color: #555;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .edit-btn, .delete-btn {
+            margin-right: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .edit-btn:hover {
+            color: #0056b3;
+        }
+
+        .delete-btn {
+            color: #dc3545;
+        }
+
+        .delete-btn:hover {
+            color: #a71d2a;
+        }
+
+        #clear-display-btn {
+            background-color: #ffc107;
+            color: #333;
+        }
+
+        #clear-display-btn:hover {
+            background-color: #e0a800;
+        }
+
+        #export-btn {
+            background-color: #28a745;
+        }
+
+        #export-btn:hover {
+            background-color: #218838;
+        }
+
+        #transfer-btn {
+            background-color: #17a2b8;
+        }
+
+        #transfer-btn:hover {
+            background-color: #138496;
+        }
     </style>
     <script type="module" src="https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js"></script>
     <script type="module" src="https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js"></script>
@@ -31,7 +142,7 @@
 
     <!-- Search Bar -->
     <input type="text" id="search-box" placeholder="Search descriptions...">
-    
+
     <!-- Export and Transfer Buttons -->
     <button id="export-btn">Export to CSV</button>
     <button id="transfer-btn">Transfer Local Storage Data to Firebase</button>
@@ -87,7 +198,7 @@
                 const linkCell = document.createElement('td');
                 const linkAnchor = document.createElement('a');
                 linkAnchor.href = item.link;
-                linkAnchor.textContent = item.link;
+                linkAnchor.textContent = "link";
                 linkAnchor.target = '_blank';
                 linkCell.appendChild(linkAnchor);
 
